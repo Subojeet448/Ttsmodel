@@ -1,4 +1,9 @@
-TTS==0.22.0
 fastapi
 uvicorn
+TTS==0.22.0
 python-multipart
+pyyaml>=6.0
+jieba
+bnnumerizer
+torchaudio
+unidecode
