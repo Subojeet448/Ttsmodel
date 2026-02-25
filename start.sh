@@ -1,3 +1,2 @@
 #!/bin/bash
-echo "Starting FastAPI TTS server..."
-exec uvicorn app:app --host 0.0.0.0 --port $PORT
+uvicorn app:app --host 0.0.0.0 --port $PORT
