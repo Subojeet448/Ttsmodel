@@ -20,11 +20,18 @@ VOICES = {
 
 @app.get("/")
 def home():
+    # Ye main link hai jise aap Uptime Robot mein dalenge
     return {
         "status": "Online", 
+        "uptime_robot": "Active",
         "available_voices": list(VOICES.keys()),
         "example": "/say?text=Hello&voice=female"
     }
+
+@app.get("/ping")
+def ping():
+    """Uptime Robot ke liye chota endpoint"""
+    return {"message": "pong", "status": "alive"}
 
 @app.get("/say")
 async def say(
@@ -35,21 +42,16 @@ async def say(
         return JSONResponse({"status": "error", "message": "No text provided"}, status_code=400)
 
     selected_voice = VOICES.get(voice.lower(), VOICES["female"])
-    
-    # Har request ke liye unique file name dena better hota hai
     output_file = os.path.join(OUTPUT_DIR, "speech.mp3")
     
     try:
         communicate = edge_tts.Communicate(text, selected_voice)
         await communicate.save(output_file)
-        
         return FileResponse(output_file, media_type="audio/mpeg", filename="speech.mp3")
-    
     except Exception as e:
         return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
 
 if __name__ == "__main__":
     import uvicorn
-    # Render automatically sets PORT environment variable
     port = int(os.environ.get("PORT", 10000))
     uvicorn.run(app, host="0.0.0.0", port=port)
